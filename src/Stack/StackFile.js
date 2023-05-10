@@ -1,0 +1,64 @@
+import React, { useContext, useEffect } from 'react'
+import { createStackNavigator } from '@react-navigation/stack';
+import Signin from '../Screens/Stack/Signin';
+import Signup from '../Screens/Stack/Signup';
+import WelcomeScreen from '../Screens/Stack/Welcome';
+import userContext from '../Store/userContext';
+import HomeReceipeScreen from '../Screens/Stack/HomeReceipeScreen';
+import LoginReq from '../Screens/Stack/LoginReq';
+import RecepieDetails from '../Login Stack/RecepieDetails';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import DrawerScreen from './DrawerFile';
+
+const HomeScreen = () => {
+
+    const Stack = createStackNavigator()
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} >
+            <Stack.Screen name="HomeReceipe" component={HomeReceipeScreen} />
+            <Stack.Screen name='LoginReq' component={LoginReq} />
+            <Stack.Screen name='Signup' component={Signup} />
+            <Stack.Screen name='Signin' component={Signin} />
+        </Stack.Navigator>
+    )
+}
+
+const BiometricScreen = () => {
+    const Stack = createStackNavigator()
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} >
+            <Stack.Screen name='Welcome' component={WelcomeScreen} />
+        </Stack.Navigator>
+    )
+}
+
+const ProtectedScreen = () => {
+    const Stack = createStackNavigator()
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="HomeDrawer" component={DrawerScreen} />
+            <Stack.Screen name="RecipeDetails" component={RecepieDetails} />
+        </Stack.Navigator>
+    )
+}
+
+const Stack = () => {
+    const { isAuth, isFinger, setIsFinger, setIsAuth } = useContext(userContext)
+    useEffect(() => {
+        AsyncStorage.getItem("loginUser")
+            .then((res) => {
+                if (res !== null) {
+                    setIsAuth(res)
+                }
+                else {
+                    setIsFinger(false)
+                }
+            })
+    })
+    return (
+        false ? <BiometricScreen /> : (isAuth ? <ProtectedScreen /> : <HomeScreen />)
+    )
+}
+
+export default Stack
+
