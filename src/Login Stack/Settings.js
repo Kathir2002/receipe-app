@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { View, Dimensions, ImageBackground, TouchableOpacity, TextInput, ToastAndroid } from 'react-native'
+import { View, ImageBackground, TouchableOpacity, TextInput, ToastAndroid } from 'react-native'
 import { Avatar, Text, Overlay, ThemeConsumer } from 'react-native-elements'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation } from '@react-navigation/native'
@@ -10,16 +10,12 @@ import UserProfile from "../utils/UserProfile"
 import userContext from '../Store/userContext'
 import AppHeader from '../utils/AppHeader'
 
-const width = Dimensions.get("window").width
-const height = Dimensions.get("window").height
-
 const Settings = () => {
 
     const navigation = useNavigation()
     const [isTouchedName, setIsTouchedName] = useState(false)
     const [isTouchedMobile, setIsTouchedMobile] = useState(false)
     const [loading, setLoading] = useState(true)
-
     const { userPhoto, setUserPhoto, setIsAuth, userKey } = useContext(userContext)
     const [visible, setVisible] = useState(false)
     const [userData, setUserData] = useState({})
@@ -71,7 +67,7 @@ const Settings = () => {
                         <View style={theme.SettingStyle.container}>
                             <ImageBackground style={theme.SettingStyle.bgImageStyle} source={require("../assets/profile-bg.png")}>
                                 <View style={theme.SettingStyle.imgBgContainer}>
-                                    <Avatar source={{ uri: userPhoto }} rounded size={100} onPress={() => setVisible(true)} />
+                                    <Avatar source={{ uri: `data:image/png;base64,${userPhoto}` }} rounded size={100} onPress={() => setVisible(true)} />
                                     <Text style={theme.SettingStyle.txtHeadStyle}>{userData.uName}</Text>
                                 </View>
                             </ImageBackground>

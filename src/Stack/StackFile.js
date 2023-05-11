@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 import Signin from '../Screens/Stack/Signin';
 import Signup from '../Screens/Stack/Signup';
@@ -7,8 +8,8 @@ import userContext from '../Store/userContext';
 import HomeReceipeScreen from '../Screens/Stack/HomeReceipeScreen';
 import LoginReq from '../Screens/Stack/LoginReq';
 import RecepieDetails from '../Login Stack/RecepieDetails';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerScreen from './DrawerFile';
+import OTPVerfication from '../Screens/Stack/OTPVerfication';
 
 const HomeScreen = () => {
 
@@ -18,6 +19,7 @@ const HomeScreen = () => {
             <Stack.Screen name="HomeReceipe" component={HomeReceipeScreen} />
             <Stack.Screen name='LoginReq' component={LoginReq} />
             <Stack.Screen name='Signup' component={Signup} />
+            <Stack.Screen name='OTPVerify' component={OTPVerfication} />
             <Stack.Screen name='Signin' component={Signin} />
         </Stack.Navigator>
     )

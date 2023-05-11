@@ -55,7 +55,7 @@ function CustomDrawerContent({ state }) {
     <ThemeConsumer>
       {({ theme }) => (
         <View style={theme.DrawerStyles.container}>
-          <Avatar containerStyle={theme.DrawerStyles.img} source={{ uri: userPhoto }} rounded size={80} />
+          <Avatar containerStyle={theme.DrawerStyles.img} source={{ uri: `data:image/png;base64,${userPhoto}` }} rounded size={80} />
           {menuItems.map((item, index) => (
             <TouchableOpacity
               key={item.screen}

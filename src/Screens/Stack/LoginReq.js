@@ -29,7 +29,8 @@ const LoginReq = () => {
                         <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("Signup")}>
                             <Text>Register</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("Signin")}>
+                        {/* <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("Signin")}> */}
+                        <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("OTPVerify")}>
                             <Text>Login</Text>
                         </TouchableOpacity>
                     </View>

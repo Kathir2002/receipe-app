@@ -8,7 +8,7 @@ export default LoginReqStyles = {
         backgroundColor: '#fff',
     },
     backgroundImageStyle: {
-        height: 400,
+        height: height / 2,
         resizeMode: "cover",
         width: "100%",
         opacity: .8,
@@ -18,13 +18,13 @@ export default LoginReqStyles = {
     mainContainer: { marginLeft: 20 },
     txtStyle: {
         color: "white",
-        fontSize:18,
-        fontWeight:700
+        fontSize: 18,
+        fontWeight: 700
     },
     headerStyle: {
-        padding: 15 , 
-        height:"100%",
-        backgroundColor:"rgba(0,0,0, 0.60)",
+        padding: 15,
+        height: "100%",
+        backgroundColor: "rgba(0,0,0, 0.60)",
         padding: 10,
         flexDirection: "row",
     },

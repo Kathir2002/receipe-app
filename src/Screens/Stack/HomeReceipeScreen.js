@@ -28,7 +28,6 @@ const HomeReceipeScreen = () => {
                         <SearchBar scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
                         <SpeechRecognition setContent={searchFunc} />
                     </View>
-                    {console.log(search)}
                     <ScrollView>
                         <View style={theme.HomeRecipeStyles.caroselContainer}>
                             {/* carosel file */}
