@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, TextInput, TouchableOpacity, ToastAndroid } from 'react-native'
-import { Avatar, Text, ThemeConsumer } from 'react-native-elements'
+import { Avatar, Button, Text, ThemeConsumer } from 'react-native-elements'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Icon from "react-native-vector-icons/FontAwesome"
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,16 +11,21 @@ import axios from 'axios'
 //file imports 
 import userContext from '../../Store/userContext'
 import CheckedBox from '../../utils/CheckedBox'
+import { useRef } from 'react'
+import { Modal } from 'react-native'
 
 const Signin = () => {
+    const ref = useRef()
     const navigation = useNavigation()
     const [userData, setUserData] = useState([])
     const [userDataKey, setUserDataKey] = useState([])
     const [fullData, setFullData] = useState([])
     const [isTouched, setIsTouched] = useState(false)
     const [isSelected, setSelection] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false)
+
     const { setIsAuth } = useContext(userContext)
-    
+
     useEffect(() => {
         getUserData()
     }, [])
@@ -33,6 +38,8 @@ const Signin = () => {
     const getUserData = async () => {
         try {
             const res = await axios.get("https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users.json")
+            // const res = await axios.get("https://calm-ruby-leopard-ring.cyclic.app/signin", { email: "kathirmthvn@gmail.com", password: "mathavan" })
+            console.log(res.data);
             setUserDataKey(Object.keys(res.data))
             setFullData(res.data)
             setUserData(Object.values(res.data))
@@ -41,7 +48,6 @@ const Signin = () => {
             console.log(err);
         }
     }
-
     const onCheckHandler = (values) => {
         let valid = true
         //to take key of the user
@@ -53,7 +59,7 @@ const Signin = () => {
         //to validate the credentials
         userData.map((res) => {
             if ((res.email === values.email) && (res.password === values.password)) {
-                if(isSelected) {
+                if (isSelected) {
                     AsyncStorage.setItem("loginUser", JSON.stringify(true))
                 }
                 navigation.navigate('HomeDrawer')
@@ -84,9 +90,11 @@ const Signin = () => {
                 <View style={theme.SigninStyles.container}>
                     <View style={theme.SigninStyles.empty}>
                         <AntDesign name="arrowleft" color="white" size={30} onPress={() => navigation.navigate("HomeReceipe")} />
-                        <Text style={{ fontSize: 18, fontWeight: 600, color: "white" }}>Forget Password?</Text>
+                        <Text style={theme.SigninStyles.forgetTxt} onPress={() => navigation.navigate("ChangePassword")}>Forget Password?</Text>
                     </View>
+
                     <Formik
+                        innerRef={ref}
                         validationSchema={loginValidationSchema}
                         initialValues={{ email: "", password: "" }}
                         onSubmit={values => onCheckHandler(values)}>
@@ -145,8 +153,14 @@ const Signin = () => {
                                     <TouchableOpacity style={theme.SigninStyles.buttonContainer} disabled={!isValid} onPress={handleSubmit}>
                                         <Text h4 style={theme.SigninStyles.btnText}>Signin</Text>
                                     </TouchableOpacity>
-                                    <Text style={theme.SigninStyles.loginText} onPress={() => navigation.navigate("Signup")} >Do You don't have an Account?</Text>
+                                    <Text style={theme.SigninStyles.loginText} onPress={() => { ref?.current?.resetForm(); navigation.navigate("Signup") }} >Do You don't have an Account?</Text>
                                 </View>
+                                <Modal animationType="slide" transparent={true} visible={modalVisible}>
+                                    <View>
+                                        <Text>Hai</Text>
+                                        <Button onPress={() => setModalVisible(false)}>Close</Button>
+                                    </View>
+                                </Modal>
                             </View>
                         )}
                     </Formik>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
+import { View, TextInput, TouchableOpacity, KeyboardAvoidingView, ImageBackground } from 'react-native'
 import { Avatar, Text, ThemeConsumer } from 'react-native-elements'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Icon from "react-native-vector-icons/FontAwesome"
@@ -8,17 +8,16 @@ import * as yup from 'yup'
 import axios from 'axios'
 
 const Signup = ({ navigation }) => {
-    const [userProfilePhoto, setUserProfilePhoto] = useState("https://cdn-icons-png.flaticon.com/512/149/149071.png")
-    const [isSlected,setIsSelcted] = useState(false)
+
+    const [isSlected, setIsSelcted] = useState(false)
+    const [loading, setLoading] = useState(false)
+
     const onRegisterHandler = async (values) => {
-        try {
-            await axios.post("https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users.json", { ...values, userProfilePhoto: { photo: userProfilePhoto } })
-            navigation.navigate("Signin")
-            // await axios.post("https://calm-ruby-leopard-ring.cyclic.app/send-email", { name: values.uName, email: values.email, password: values.password, phoneNumber: values.phoneNumber })
-        }
-        catch (err) {
-            console.log(err);
-        }
+        setLoading(true)
+        const sendOTP = await axios.post("https://calm-ruby-leopard-ring.cyclic.app/send-otp", { email: values.email })
+        setLoading(false)
+        let otp = sendOTP.data
+        navigation.navigate("OTPVerify", { values, otp })
     }
 
     const loginValidationSchema = yup.object().shape({
@@ -46,7 +45,11 @@ const Signup = ({ navigation }) => {
     return (
         <ThemeConsumer>
             {({ theme }) => (
-                <KeyboardAvoidingView style={theme.SignupStyles.container} behavior={"padding"}>
+                loading ? <View style={theme.OTPVerifyStylessplashContainer}>
+                    <ImageBackground source={require("../../assets/loading.gif")} style={theme.OTPVerifyStyles.splashImage}>
+                        <Text h2 style={theme.OTPVerifyStyles.splashTxt}>Flavor Finder</Text>
+                    </ImageBackground>
+                </View> : <KeyboardAvoidingView style={theme.SignupStyles.container} behavior={"padding"}>
                     <View style={theme.SignupStyles.empty}>
                         <AntDesign name="arrowleft" color="white" size={30} onPress={() => navigation.navigate("HomeReceipe")} />
                         <Text style={{ fontSize: 18, fontWeight: 600, color: "white" }}>Need any help?</Text>

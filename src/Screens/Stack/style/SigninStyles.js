@@ -35,7 +35,7 @@ export default SigninStyles = {
         height: 60,
         borderWidth: 1,
         borderColor: "white",
-        backgroundColor: "#28ed35",
+        backgroundColor: "#3D6DCC",
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
@@ -62,7 +62,7 @@ export default SigninStyles = {
     },
     empty: {
         padding: 20,
-        backgroundColor: "#28ed35",
+        backgroundColor: "#3D6DCC",
         height: 150,
         width: "100%",
         flexDirection: "row",
@@ -83,5 +83,6 @@ export default SigninStyles = {
         backgroundColor: "white",
         position: "absolute",
         top: 120
-    }
+    },
+    forgetTxt: { fontSize: 18, fontWeight: 600, color: "white" },
 }

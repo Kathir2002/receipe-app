@@ -14,6 +14,7 @@ import CategoriesStyles from "./Sub Screens/styles/CategoriesStyles";
 import AppHeaderStyles from "./utils/styles/AppHeaderStyles";
 import UserProfileStyles from "./utils/styles/UserProfileStyles";
 import FlatStyles from "./utils/styles/FlatStyles";
+import OTPVerifyStyles from "./Screens/Stack/style/OTPVerifyStyles";
 export default Theme = {
     CaroselStyle,
     SplashStyles,
@@ -31,4 +32,5 @@ export default Theme = {
     AppHeaderStyles,
     UserProfileStyles,
     FlatStyles,
+    OTPVerifyStyles
 } 

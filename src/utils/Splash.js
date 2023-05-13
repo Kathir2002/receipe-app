@@ -48,7 +48,7 @@ const Splash = () => {
         }}>
             <NavigationContainer>
                 <ThemeProvider theme={Theme} >
-                    {false ? <SplashScreen /> : <Stack />}
+                    {isLoading ? <SplashScreen /> : <Stack />}
                 </ThemeProvider>
             </NavigationContainer>
         </userContext.Provider>

@@ -25,7 +25,7 @@ export default SettingStyles = {
     inpStyle: {
         height: "100%",
         width: "90%",
-        paddingHorizontal:10,
+        paddingHorizontal: 10,
         color: "black",
     },
     txtIconContainer: {
@@ -82,7 +82,7 @@ export default SettingStyles = {
         height: 60,
         borderWidth: 1,
         borderColor: "white",
-        backgroundColor: "#28ed35",
+        backgroundColor: "#3D6DCC",
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",

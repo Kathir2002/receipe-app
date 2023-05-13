@@ -33,7 +33,7 @@ export default SignupStyles = {
         height: 60,
         borderWidth: 1,
         borderColor: "white",
-        backgroundColor: "#28ed35",
+        backgroundColor: "#3D6DCC",
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
@@ -54,7 +54,7 @@ export default SignupStyles = {
     },
     empty: {
         padding: 20,
-        backgroundColor: "#28ed35",
+        backgroundColor: "#3D6DCC",
         height: 150,
         width: "100%",
         flexDirection: "row",

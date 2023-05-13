@@ -61,18 +61,24 @@ const Settings = () => {
     return (
         <ThemeConsumer>
             {({ theme }) => (
-                loading ? <ImageBackground style={theme.SplashStyles.splashImage} source={require("../assets/loading.gif")} /> :
+                loading ? <View style={theme.OTPVerifyStylessplashContainer}>
+                    <ImageBackground source={require("../assets/loading.gif")} style={theme.OTPVerifyStyles.splashImage}>
+                        <Text h2 style={theme.OTPVerifyStyles.splashTxt}>Flavor Finder</Text>
+                    </ImageBackground>
+                </View> :
                     <>
                         <AppHeader name={"Profile"} />
                         <View style={theme.SettingStyle.container}>
                             <ImageBackground style={theme.SettingStyle.bgImageStyle} source={require("../assets/profile-bg.png")}>
+                                <View style={{ alignItems: "flex-end", padding: 15 }}>
+                                    <Text style={{ color: "white", fontSize: 16, fontWeight: 700 }} >Change Password?</Text>
+                                </View>
                                 <View style={theme.SettingStyle.imgBgContainer}>
-                                    <Avatar source={{ uri: `data:image/png;base64,${userPhoto}` }} rounded size={100} onPress={() => setVisible(true)} />
+                                    <Avatar source={{ uri: userPhoto.length > 100 ? `data:image/png;base64,${userPhoto}` : userPhoto }} rounded size={100} onPress={() => setVisible(true)} />
                                     <Text style={theme.SettingStyle.txtHeadStyle}>{userData.uName}</Text>
                                 </View>
                             </ImageBackground>
                             <ImageBackground source={require("../assets/bg-2.jpg")} style={theme.SettingStyle.mainContainer}>
-
                                 <Formik
                                     initialValues={{ email: userData.email, uName: userData.uName, phoneNumber: userData.phoneNumber }}
                                     onSubmit={values => onDataChangeHandler(values)}>

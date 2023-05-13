@@ -34,7 +34,7 @@ export default LoginReqStyles = {
         height: 60,
         borderWidth: 1,
         borderColor: "white",
-        backgroundColor: "#28ed35",
+        backgroundColor: "#3D6DCC",
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
@@ -50,5 +50,8 @@ export default LoginReqStyles = {
     },
     gifStyle: {
         marginLeft: width / 2.7
+    },
+    btnColor: {
+        color: "white"
     }
 }

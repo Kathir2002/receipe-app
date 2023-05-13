@@ -10,6 +10,7 @@ import LoginReq from '../Screens/Stack/LoginReq';
 import RecepieDetails from '../Login Stack/RecepieDetails';
 import DrawerScreen from './DrawerFile';
 import OTPVerfication from '../Screens/Stack/OTPVerfication';
+import ChangePassword from '../Screens/Stack/ChangePassword';
 
 const HomeScreen = () => {
 
@@ -19,8 +20,9 @@ const HomeScreen = () => {
             <Stack.Screen name="HomeReceipe" component={HomeReceipeScreen} />
             <Stack.Screen name='LoginReq' component={LoginReq} />
             <Stack.Screen name='Signup' component={Signup} />
-            <Stack.Screen name='OTPVerify' component={OTPVerfication} />
             <Stack.Screen name='Signin' component={Signin} />
+            <Stack.Screen name='ChangePassword' component={ChangePassword} />
+            <Stack.Screen name='OTPVerify' component={OTPVerfication} />
         </Stack.Navigator>
     )
 }
@@ -58,7 +60,7 @@ const Stack = () => {
             })
     })
     return (
-        false ? <BiometricScreen /> : (isAuth ? <ProtectedScreen /> : <HomeScreen />)
+        isFinger ? <BiometricScreen /> : (isAuth ? <ProtectedScreen /> : <HomeScreen />)
     )
 }
 

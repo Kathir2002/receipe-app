@@ -41,7 +41,6 @@ const UserProfile = ({ setCameraPhoto, setVisible }) => {
         setImage(result.assets[0].uri)
         setCameraPhoto(source)
     }
-    console.log("Photo", source);
     return (
         <ThemeConsumer>
             {({ theme }) => (

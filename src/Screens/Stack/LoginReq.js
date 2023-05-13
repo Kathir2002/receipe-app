@@ -27,11 +27,10 @@ const LoginReq = () => {
                     </View>
                     <View style={theme.LoginReqStyles.btnMainContainer}>
                         <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("Signup")}>
-                            <Text>Register</Text>
+                            <Text style={theme.LoginReqStyles.btnColor}>Register</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("Signin")}> */}
-                        <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("OTPVerify")}>
-                            <Text>Login</Text>
+                        <TouchableOpacity style={theme.LoginReqStyles.btnContainer} onPress={() => navigation.navigate("Signin")}>
+                            <Text style={theme.LoginReqStyles.btnColor}> Login</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
