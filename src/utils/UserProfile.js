@@ -1,28 +1,22 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { View, PermissionsAndroid, Pressable } from 'react-native'
 import { Text, Button, ThemeConsumer } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import axios from 'axios'
-import RNFS from "react-native-fs"
 import userContext from '../Store/userContext'
 
-const UserProfile = ({ setCameraPhoto, setVisible }) => {
-    const { userKey } = useContext(userContext)
-    const [source, setSource] = useState("")
-
+const UserProfile = ({ setVisible }) => {
+    const { setUserPhoto, userKey } = useContext(userContext)
     let options = {
+        quality: 0.1,
+        includeBase64: true,
         saveToPhotos: true,
         mediaType: 'photo',
     }
-    // To convert Image to BASE 64 Format 
-    const setImage = (uri) => {
-        RNFS.readFile(uri, 'base64')
-            .then(res => {
-                setSource(res)
-                axios.put(`https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users/${userKey}/userProfilePhoto.json`, { photo: res })
-            })
-            .catch(err => { console.log("err", err) })
+    // To store Image in mongodb 
+    const setImage = async (uri) => {
+        await axios.post("https://calm-ruby-leopard-ring.cyclic.app/update-profile", { uId: userKey, userImage: uri })
     }
     const openCamera = async () => {
         const granted = await PermissionsAndroid.request(
@@ -30,16 +24,15 @@ const UserProfile = ({ setCameraPhoto, setVisible }) => {
         )
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             const result = await launchCamera(options)
-            setImage(result.assets[0].uri)
-            setCameraPhoto(source)
-
+            setImage(result?.assets[0]?.base64)
+            setUserPhoto(result?.assets[0]?.base64)
         }
     }
     const openGallery = async () => {
         const result = await launchImageLibrary(options)
-        result.didCancel != true && setCameraPhoto(result.assets[0].uri)
-        setImage(result.assets[0].uri)
-        setCameraPhoto(source)
+        // result.didCancel != true && setUserPhoto(result.assets[0].uri)
+        setImage(result?.assets[0]?.base64)
+        setUserPhoto(result?.assets[0]?.base64)
     }
     return (
         <ThemeConsumer>
@@ -49,16 +42,16 @@ const UserProfile = ({ setCameraPhoto, setVisible }) => {
                         <Text h4>Profile photo</Text>
                     </View>
                     <View style={theme.UserProfileStyles.buttonContainer}>
-                        <Pressable style={theme.UserProfileStyles.pressableStyle} onPress={openCamera}>
+                        <Pressable testID='cameraBtn' style={theme.UserProfileStyles.pressableStyle} onPress={openCamera}>
                             <Icon name="camera" size={30} color="black" />
                             <Text>Camera</Text>
                         </Pressable>
-                        <Pressable style={theme.UserProfileStyles.pressableStyle} onPress={openGallery}>
+                        <Pressable testID='galleryBtn' style={theme.UserProfileStyles.pressableStyle} onPress={openGallery}>
                             <Icon name="image" size={30} color="black" />
                             <Text>Gallery</Text>
                         </Pressable>
                     </View>
-                    <Button buttonStyle={theme.UserProfileStyles.btnContainer} title="Okay" onPress={() => setVisible(false)} />
+                    <Button testID='closeBtn' buttonStyle={theme.UserProfileStyles.btnContainer} title="Okay" onPress={() => setVisible(false)} />
                 </>
             )}
         </ThemeConsumer>

@@ -7,12 +7,14 @@ const userContext = createContext({
     setIsFinger: () => { },
     userPhoto: {},
     setUserPhoto: () => { },
-    data: {},
+    Data: {},
     setData: () => { },
     fav: {},
     setFav: () => { },
     userKey: {},
-    setUserKey: () => {},
+    setUserKey: () => { },
+    isAdmin: {},
+    setIsAdmin: () => { },
 })
 
 export default userContext

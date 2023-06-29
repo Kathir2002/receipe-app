@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 import { SearchBar, Text, ThemeConsumer } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,12 +22,12 @@ const HomeReceipeScreen = () => {
             {({ theme }) => (
                 <>
                     <AppHeader name={"Home"} />
-                    <View style={theme.HomeScreenStyles.container}>
+                    <View testID='homeScreenMainView' style={theme.HomeScreenStyles.container}>
                         <View style={theme.HomeScreenStyles.searchContainer}>
-                            <SearchBar scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
+                            <SearchBar testID='searchBar' scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
                             <SpeechRecognition setContent={searchFunc} />
                         </View>
-                        <ScrollView>
+                        <ScrollView testID='scrollPointView'>
                             <View style={theme.HomeScreenStyles.caroselContainer}>
                                 {/* carosel file */}
                                 <Carosel />
@@ -35,7 +35,7 @@ const HomeReceipeScreen = () => {
                             <View style={theme.HomeScreenStyles.mainContainer}>
                                 <View style={theme.HomeScreenStyles.recentView}>
                                     <Text style={theme.HomeScreenStyles.recentTxt}>Recently Added</Text>
-                                    <TouchableOpacity onPress={() => navigation.navigate("Categories")} style={theme.HomeScreenStyles.recentTextView}>
+                                    <TouchableOpacity testID='exploreText' onPress={() => navigation.navigate("Categories")} style={theme.HomeScreenStyles.recentTextView}>
                                         <Text style={theme.HomeScreenStyles.exploreTxt}>Explore more </Text>
                                         <Icon name='arrow-circle-right' size={25} color="#e88a0e" />
                                     </TouchableOpacity>
@@ -53,7 +53,7 @@ const HomeReceipeScreen = () => {
                                 </View>
                                 <View style={theme.HomeScreenStyles.recentView}>
                                     <Text style={theme.HomeScreenStyles.recentTxt}>Instagram Reel Exclusives</Text>
-                                    <TouchableOpacity onPress={() => navigation.navigate("Categories")} style={theme.HomeScreenStyles.recentTextView}>
+                                    <TouchableOpacity testID='categories' onPress={() => navigation.navigate("Categories")} style={theme.HomeScreenStyles.recentTextView}>
                                         <Text style={theme.HomeScreenStyles.exploreTxt}>Explore more </Text>
                                         <Icon name='arrow-circle-right' size={25} color="#e88a0e" />
                                     </TouchableOpacity>
@@ -68,6 +68,5 @@ const HomeReceipeScreen = () => {
         </ThemeConsumer>
     )
 }
-
 
 export default HomeReceipeScreen

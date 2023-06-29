@@ -12,6 +12,7 @@ const ValueSlider = ({ value, setValue }) => {
                     <Text style={{ color: "black", fontSize: 18, fontWeight: 700, marginBottom: 10 }}>Filter by Time</Text>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Slider
+                            testID='slider'
                             style={theme.FlatStyles.slider}
                             minimumValue={0}
                             maximumValue={100}
@@ -22,7 +23,7 @@ const ValueSlider = ({ value, setValue }) => {
                             maximumTrackTintColor="#007AFF"
                             thumbTintColor="#007AFF"
                         />
-                        <Text style={{ color: "black", fontSize: 14, fontWeight: 600, }}>Selected Range: 0 to {value}</Text>
+                        <Text testID='selectedValue' style={{ color: "black", fontSize: 14, fontWeight: 600, }}>Selected Range: 0 to {value}</Text>
                     </View>
                 </View>
             )}

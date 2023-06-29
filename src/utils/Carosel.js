@@ -27,6 +27,7 @@ const Carosel = () => {
     const width = Dimensions.get('window').width;
     return (
         <Carousel
+            testID='carosel'
             loop
             width={width}
             height={width / 2}

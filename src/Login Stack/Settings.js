@@ -22,42 +22,32 @@ const Settings = () => {
 
     useEffect(() => {
         getUserData()
-    }, [userData])
-
+    }, [])
     const getUserData = async () => {
         try {
-            const res = await axios.get(`https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users/${userKey}.json`);
-            setUserData(res.data)
+            const res = await axios.post('https://calm-ruby-leopard-ring.cyclic.app/get-user', { uId: userKey })
+            setUserPhoto(res?.data?.User?.userImage)
+            setUserData(res?.data)
             setLoading(false)
         }
         catch (err) {
             console.log(err);
         }
     }
-    const CameraHandler = (e) => {
-        setUserPhoto(e)
-    }
     const visiblityHandler = (e) => {
         setVisible(e)
     }
-
     const logoutHandler = async () => {
-        await AsyncStorage.removeItem("loginUser")
-        await AsyncStorage.removeItem("userKey")
+        await AsyncStorage.clear()
         setIsAuth(false)
         navigation.navigate("HomeReceipe")
     }
     const onDataChangeHandler = async (values) => {
-        if ((values.uName) && (values.phoneNumber)) {
-            let data1 = { ...values, password: userData.password, email: userData.email, userProfilePhoto: { photo: userPhoto } }
-            await axios.put(`https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users/${userKey}.json`, data1)
-        }
-        else {
-            ToastAndroid.showWithGravity("Please fill all details!", ToastAndroid.SHORT, ToastAndroid.BOTTOM)
-        }
+        let data = { name: values.name, uId: userKey, phoneNumber: values.phoneNumber }
+        await axios.post("https://calm-ruby-leopard-ring.cyclic.app/edit-user", data)
+        ToastAndroid.showWithGravity("Profile updated successfully", ToastAndroid.SHORT, ToastAndroid.BOTTOM)
         setIsTouchedName(false)
     }
-
     return (
         <ThemeConsumer>
             {({ theme }) => (
@@ -74,29 +64,29 @@ const Settings = () => {
                                     <Text style={{ color: "white", fontSize: 16, fontWeight: 700 }} >Change Password?</Text>
                                 </View>
                                 <View style={theme.SettingStyle.imgBgContainer}>
-                                    <Avatar source={{ uri: userPhoto.length > 100 ? `data:image/png;base64,${userPhoto}` : userPhoto }} rounded size={100} onPress={() => setVisible(true)} />
-                                    <Text style={theme.SettingStyle.txtHeadStyle}>{userData.uName}</Text>
+                                    <Avatar testID="avatar" source={{ uri: userPhoto?.length > 100 ? `data:image/png;base64,${userPhoto}` : userPhoto }} rounded size={100} onPress={() => setVisible(true)} />
+                                    <Text testID='userName' style={theme.SettingStyle.txtHeadStyle}>{userData?.User?.name}</Text>
                                 </View>
                             </ImageBackground>
                             <ImageBackground source={require("../assets/bg-2.jpg")} style={theme.SettingStyle.mainContainer}>
                                 <Formik
-                                    initialValues={{ email: userData.email, uName: userData.uName, phoneNumber: userData.phoneNumber }}
+                                    initialValues={{ email: userData?.User?.email, name: userData?.User?.name, phoneNumber: userData?.User?.phoneNumber }}
                                     onSubmit={values => onDataChangeHandler(values)}>
-                                    {({ errors, touched, setFieldValue, handleBlur, handleSubmit, values, isValid }) => (
+                                    {({ errors, touched, handleChange, setFieldValue, handleBlur, handleSubmit, values, isValid }) => (
                                         <>
                                             <View style={theme.SettingStyle.txtContainer}>
                                                 <Text>Name</Text>
                                                 <View style={theme.SettingStyle.txtIconContainer}>
                                                     <TextInput
+                                                        testID='game'
                                                         editable={isTouchedName}
-                                                        onFocus={() => console.log("focus")}
-                                                        name="uName"
+                                                        name="name"
                                                         style={[theme.SettingStyle.inpStyle, { backgroundColor: isTouchedName ? "#D3D3D3" : "transparent", borderRadius: 10 }]}
-                                                        onChangeText={(e) => (setFieldValue('uName', e))}
-                                                        value={values.uName}
+                                                        onChangeText={handleChange("name")}
+                                                        value={values.name}
                                                         keyboardType="default"
                                                     />
-                                                    <Icon name='edit' color={"black"} size={20} onPress={() => setIsTouchedName(!isTouchedName)} />
+                                                    <Icon testID='edit1Icon' name='edit' color={"black"} size={20} onPress={() => setIsTouchedName(!isTouchedName)} />
                                                 </View>
                                             </View>
                                             <View style={theme.SettingStyle.txtContainer}>
@@ -105,8 +95,8 @@ const Settings = () => {
                                                     <TextInput
                                                         name="email"
                                                         style={theme.SettingStyle.inpStyle}
-                                                        onChangeText={(e) => (setFieldValue('email', e))}
-                                                        value={userData.email}
+                                                        onChangeText={(handleChange('email'))}
+                                                        value={userData?.User?.email}
                                                         editable={false}
                                                         keyboardType="email-address"
                                                     />
@@ -116,28 +106,29 @@ const Settings = () => {
                                                 <Text>Mobile</Text>
                                                 <View style={theme.SettingStyle.txtIconContainer}>
                                                     <TextInput
+                                                        testID='mobileField'
                                                         editable={isTouchedMobile}
                                                         name="phoneNumber"
                                                         style={[theme.SettingStyle.inpStyle, { backgroundColor: isTouchedMobile ? "#D3D3D3" : "transparent", borderRadius: 10 }]}
-                                                        onChangeText={(e) => (setFieldValue('phoneNumber', e))}
+                                                        onChangeText={(handleChange('phoneNumber'))}
                                                         onBlur={handleBlur("phoneNumber")}
-                                                        value={values.phoneNumber}
+                                                        value={values?.phoneNumber?.toString()}
                                                         keyboardType="numeric"
                                                     />
-                                                    <Icon name='edit' color={"black"} size={20} onPress={() => setIsTouchedMobile(!isTouchedMobile)} />
+                                                    <Icon testID='edit2Icon' name='edit' color={"black"} size={20} onPress={() => setIsTouchedMobile(!isTouchedMobile)} />
                                                 </View>
                                             </View>
                                             <View>
                                                 <View style={theme.SettingStyle.conditionView}>
                                                     {
                                                         isTouchedMobile && isTouchedName && <View>
-                                                            <TouchableOpacity style={theme.SettingStyle.smallButtonContainer} onPress={handleSubmit}>
+                                                            <TouchableOpacity testID='submitBtn' style={theme.SettingStyle.smallButtonContainer} onPress={handleSubmit}>
                                                                 <Text style={theme.SettingStyle.btnText}>Save</Text>
                                                             </TouchableOpacity>
                                                         </View>
                                                     }
                                                     <View>
-                                                        <TouchableOpacity style={theme.SettingStyle.buttonContainer} onPress={logoutHandler}>
+                                                        <TouchableOpacity testID='logoutBtn' style={theme.SettingStyle.buttonContainer} onPress={logoutHandler}>
                                                             <Text style={theme.SettingStyle.btnText}>Logout</Text>
                                                         </TouchableOpacity>
                                                     </View>
@@ -147,8 +138,8 @@ const Settings = () => {
                                     )}
                                 </Formik>
                             </ImageBackground>
-                            <Overlay style={theme.SettingStyle.overlay} visible={visible} onBackdropPress={() => setVisible(false)}>
-                                <UserProfile setVisible={visiblityHandler} setCameraPhoto={CameraHandler} />
+                            <Overlay testID='overlayOpen' style={theme.SettingStyle.overlay} visible={visible} onBackdropPress={() => setVisible(false)}>
+                                <UserProfile setVisible={visiblityHandler} />
                             </Overlay>
                         </View>
                     </>

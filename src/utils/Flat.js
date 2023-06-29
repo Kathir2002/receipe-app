@@ -9,7 +9,7 @@ const FlatCardList = ({ data, search, navigateTo }) => {
     const Item = ({ item }) => (
         <ThemeConsumer>
             {({ theme }) => (
-                <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate(navigateTo, { item })}>
+                <TouchableOpacity testID={`${item.name}arrow`} activeOpacity={0.7} onPress={() => navigation.navigate(navigateTo, { item })}>
                     <Card containerStyle={theme.FlatStyles.cardContainer}>
                         <Card.Image source={{ uri: item?.image }} style={theme.FlatStyles.cardImageStyle} />
                         <Card.FeaturedTitle style={theme.FlatStyles.cardTextStyle}>{item?.name}</Card.FeaturedTitle>
@@ -33,7 +33,7 @@ const FlatCardList = ({ data, search, navigateTo }) => {
                     let outval = (item?.name)?.toLowerCase().replace(/\s/, "")
                     if (outval?.includes(searchval)) {
                         return (
-                            (item != undefined) ? <Item item={item} /> : null
+                            (item != undefined) && <Item item={item} />
                         )
                     }
                 }}

@@ -3,8 +3,8 @@ import { View, LogBox } from 'react-native';
 import Voice from '@react-native-community/voice';
 import Icon from "react-native-vector-icons/Feather"
 
-LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
-LogBox.ignoreAllLogs() //hide all types of warnings
+LogBox.ignoreLogs(['new NativeEventEmitter']);
+LogBox.ignoreAllLogs()
 const SpeechRecognition = ({ setContent }) => {
     const [isListening, setIsListening] = useState(false);
 
@@ -34,8 +34,8 @@ const SpeechRecognition = ({ setContent }) => {
     Voice.onSpeechResults = handleSpeechResults;
 
     return (
-        <View>
-            <Icon onPress={isListening ? stopSpeechToText : startSpeechToText} name={isListening ? "mic" : "mic-off"} size={30} color={"black"} />
+        <View testID='voiceView'>
+            <Icon testID='voiceIcon' onPress={isListening ? stopSpeechToText : startSpeechToText} name={isListening ? "mic" : "mic-off"} size={30} color={"black"} />
         </View>
     );
 };

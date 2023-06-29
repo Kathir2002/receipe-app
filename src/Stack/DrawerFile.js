@@ -23,14 +23,10 @@ function CustomDrawerContent({ state }) {
 
   const getProfilePhoto = async () => {
     try {
-      // const key = await axios.get("https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/temp.json")
-      let key1 = await AsyncStorage.getItem("userKey")
-      // let dataKey = Object.values(key.data)[0]
-      // let key1 = dataKey.key
-      let key = JSON.parse(key1)
+      let key = await AsyncStorage.getItem("userKey")
       setUserKey(key)
-      const res = await axios.get(`https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users/${key}.json`);
-      setUserPhoto(res.data.userProfilePhoto.photo);
+      const res = await axios.post("https://calm-ruby-leopard-ring.cyclic.app/get-user", { uId: key });
+      setUserPhoto(res?.data?.User?.userImage);
     }
     catch (Err) {
       console.log(Err);
@@ -50,13 +46,12 @@ function CustomDrawerContent({ state }) {
       ? { backgroundColor: '#e1dee3', paddingHorizontal: 30, paddingVertical: 5, width: "90%", borderBottomColor: "black", borderBottomWidth: .51, flexDirection: "row", alignItems: "center" }
       : { backgroundColor: '#FFFFFF', paddingHorizontal: 30, paddingVertical: 5, width: "90%", borderBottomColor: "black", borderBottomWidth: .51, flexDirection: "row", alignItems: "center" };
   };
-
   return (
     <ThemeConsumer>
       {({ theme }) => (
         <View style={theme.DrawerStyles.container}>
-          <Avatar containerStyle={theme.DrawerStyles.img} source={{ uri: `data:image/png;base64,${userPhoto}` }} rounded size={80} />
-          {menuItems.map((item, index) => (
+          <Avatar containerStyle={theme.DrawerStyles.img} source={{ uri: userPhoto?.length > 100 ? `data:image/png;base64,${userPhoto}` : userPhoto }} rounded size={80} />
+          {menuItems?.map((item, index) => (
             <TouchableOpacity
               key={item.screen}
               onPress={() => navigation.navigate(item.screen)}

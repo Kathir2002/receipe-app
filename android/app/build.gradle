@@ -100,6 +100,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        testBuildType System.getProperty('testBuildType', 'debug')
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        missingDimensionStrategy 'detox', 'full'
+
     }
 
     splits {
@@ -117,6 +121,13 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+            storeFile file('my-release-key.keystore')
+            storePassword 'mathavan'
+            keyAlias 'my-key-alias'
+            keyPassword 'mathavan'
+        }
     }
     buildTypes {
         debug {
@@ -125,9 +136,10 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+             proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
         }
     }
 
@@ -152,8 +164,7 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 implementation 'com.facebook.fresco:animated-gif:2.5.0'
-
-
+ androidTestImplementation(project(path: ":detox"))
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 

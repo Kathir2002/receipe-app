@@ -1,0 +1,15 @@
+module.exports = {
+    animationType: "none" | "fade" | "slide",
+    height: 50,
+    minClosingHeight: 50,
+    openDuration: 50,
+    closeDuration: 50,
+    closeOnDragDown: true,
+    dragFromTopOnly: true,
+    closeOnPressMask: true,
+    closeOnPressBack: true,
+    onClose: () => jest.fn(),
+    onOpen: () => jest.fn(),
+    customStyles: {},
+    keyboardAvoidingViewEnabled: true,
+}

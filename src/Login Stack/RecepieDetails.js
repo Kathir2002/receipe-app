@@ -11,31 +11,30 @@ const width = Dimensions.get("window").width
 const RecepieDetails = () => {
     const navigation = useNavigation()
     const route = useRoute()
-    const params = route.params.item
-
+    const params = route?.params?.item
     return (
         <ThemeConsumer>
             {
                 ({ theme }) => (
-                    <View style={theme.RecipeDetailStyle.container}>
+                    <View testID='receipeDetailsMainView' style={theme.RecipeDetailStyle.container}>
                         <View style={theme.RecipeDetailStyle.iconContainerStyle}>
-                            <AntDesign name='arrowleft' color="white" size={30} onPress={() => navigation.goBack()} />
-                            <Text style={theme.RecipeDetailStyle.txt}>{params.name}</Text>
+                            <AntDesign testID='backIcon' name='arrowleft' color="white" size={30} onPress={() => navigation.goBack()} />
+                            <Text testID='name' style={theme.RecipeDetailStyle.txt}>{params.name}</Text>
                         </View>
                         <View style={theme.RecipeDetailStyle.videoContainer}>
                             <Videos videoID={params.videoId} />
                         </View>
-                        <ScrollView nestedScrollEnabled style={theme.RecipeDetailStyle.scrollContainer}>
+                        <ScrollView testID='rDScrollView' nestedScrollEnabled style={theme.RecipeDetailStyle.scrollContainer}>
                             <View style={theme.RecipeDetailStyle.headerContainerStyle}>
                                 <View style={theme.RecipeDetailStyle.headTxtContainer}>
                                     <Icon name='dot-circle-o' size={20} color="green" />
                                     <Text style={theme.RecipeDetailStyle.txtHeadStyle}>{params.name}</Text>
                                 </View>
-                                <Text style={theme.RecipeDetailStyle.txtBodyStyle}>Cusine: {params?.cusine}</Text>
-                                <Text style={theme.RecipeDetailStyle.txtBodyStyle}>{params?.timeToEat}</Text>
+                                <Text testID='cusine' style={theme.RecipeDetailStyle.txtBodyStyle}>Cusine: {params?.cusine}</Text>
+                                <Text testID='timetoEat' style={theme.RecipeDetailStyle.txtBodyStyle}>{params?.timeToEat}</Text>
                                 <View style={theme.RecipeDetailStyle.timeContainer}>
                                     <Icon name='clock-o' color={"#737575"} size={30} />
-                                    <Text style={theme.RecipeDetailStyle.txtSecondBodyStyle}>{params?.time} mins</Text>
+                                    <Text testID='time' style={theme.RecipeDetailStyle.txtSecondBodyStyle}>{params?.time} mins</Text>
                                 </View>
                             </View>
                             <View>
@@ -46,7 +45,7 @@ const RecepieDetails = () => {
                                 <View style={theme.RecipeDetailStyle.buttonContainer}>
                                     <Text style={theme.RecipeDetailStyle.btnText}>Calories {params.nutrientInfo} kcal</Text>
                                 </View>
-                                <Text style={theme.RecipeDetailStyle.nutrientText}>Ingrdients - {params.ingrdients.length}</Text>
+                                <Text style={theme.RecipeDetailStyle.nutrientText}>Ingrdients - {params?.ingredients.length}</Text>
                                 <View style={theme.RecipeDetailStyle.buttonContainer}>
                                     <Text style={theme.RecipeDetailStyle.btnText}>Quantity for {params.quantityForServe} Serving</Text>
                                 </View>
@@ -56,16 +55,16 @@ const RecepieDetails = () => {
                                 <FlatList
                                     nestedScrollEnabled
                                     numColumns={2}
-                                    data={params.ingrdients}
+                                    data={params?.ingredients}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) => (
-                                           
-                                            <Card containerStyle={theme.FlatStyles.cardContainer}>
-                                                <Card.Image source={{ uri: item?.image }}style={theme.FlatStyles.cardImageStyle} />
-                                                <Card.FeaturedTitle style={theme.FlatStyles.cardTextStyle}>{item?.item}</Card.FeaturedTitle>
-                                                <Card.Divider />
-                                                <Card.FeaturedSubtitle style={theme.FlatStyles.cardTextStyle}>{item?.quantity}</Card.FeaturedSubtitle>
-                                            </Card>
+
+                                        <Card containerStyle={theme.FlatStyles.cardContainer}>
+                                            <Card.Image source={{ uri: item?.image }} style={theme.FlatStyles.cardImageStyle} />
+                                            <Card.FeaturedTitle style={theme.FlatStyles.cardTextStyle}>{item?.item}</Card.FeaturedTitle>
+                                            <Card.Divider />
+                                            <Card.FeaturedSubtitle style={theme.FlatStyles.cardTextStyle}>{item?.quantity}</Card.FeaturedSubtitle>
+                                        </Card>
                                     )}
                                 />
                             </View>

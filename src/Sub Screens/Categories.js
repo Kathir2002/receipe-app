@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
-import { View, FlatList, Dimensions, ScrollView } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { View, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
 import { Avatar, SearchBar, ThemeConsumer, Text } from 'react-native-elements'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import SpeechRecognition from '../utils/SpeechRecognition'
-import data from '../utils/data'
 import AppHeader from '../utils/AppHeader'
 import FlatCardList from "../utils/Flat"
+import userContext from '../Store/userContext'
 
 const width = Dimensions.get("window").width
 const Categories = () => {
-
+    const { Data } = useContext(userContext)
     const [cusineData, setCusineData] = useState([
         {
             id: 1, cusine: "All Cusines", image: "https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141353.jpg", isSelected: true
@@ -40,6 +39,7 @@ const Categories = () => {
     const [search, setSearch] = useState("")
     const [isAllCusine, setIsAllCusine] = useState(false)
     const [selectedCusineData, setSelectedCusineData] = useState()
+
     const searchFunc = (e) => {
         setSearch(e)
     }
@@ -58,10 +58,10 @@ const Categories = () => {
 
         if (item.cusine === "All Cusines") {
             setIsAllCusine(true)
-            setSelectedCusineData([...data])
+            setSelectedCusineData([...Data])
         }
         else {
-            let cusineData = data.filter(res => res.cusine === item.cusine)
+            let cusineData = Data.filter(res => res.cusine === item.cusine)
             setIsAllCusine(false)
             setSelectedCusineData([...cusineData])
         }
@@ -70,8 +70,8 @@ const Categories = () => {
     const renderItem = ({ item }) => (
         <ThemeConsumer>
             {({ theme }) => (
-                <TouchableOpacity activeOpacity={.5} style={theme.CategoriesStyles.listContainer} >
-                    <Avatar source={{ uri: item.image }} size={80} containerStyle={[{ borderColor: item.isSelected ? 'green' : 'white' }, theme.CategoriesStyles.avatarContainer]} rounded onPress={() => onSelectedCusineHandler(item)} />
+                <TouchableOpacity testID={`${item.id}name`} activeOpacity={.5} style={theme.CategoriesStyles.listContainer} onPress={() => onSelectedCusineHandler(item)} >
+                    <Avatar source={{ uri: item.image }} size={80} containerStyle={[{ borderColor: item.isSelected ? 'green' : 'white' }, theme.CategoriesStyles.avatarContainer]} rounded />
                     <Text>{item.cusine}</Text>
                 </TouchableOpacity>
             )}
@@ -85,7 +85,7 @@ const Categories = () => {
                     <AppHeader name={"All Receipes"} />
                     <View style={theme.CategoriesStyles.container}>
                         <View style={theme.CategoriesStyles.searchContainer}>
-                            <SearchBar scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
+                            <SearchBar testID='searchBar' scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
                             <SpeechRecognition setContent={searchFunc} />
                         </View>
                         <View>
@@ -105,7 +105,7 @@ const Categories = () => {
 
                         <ScrollView nestedScrollEnabled>
                             <View>
-                                <FlatCardList search={search} data={selectedCusineData ? selectedCusineData : data} navigateTo={"RecipeDetails"} />
+                                <FlatCardList search={search} data={selectedCusineData ? selectedCusineData : Data} navigateTo={"RecipeDetails"} />
                             </View>
                         </ScrollView>
                     </View>

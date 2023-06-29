@@ -20,7 +20,7 @@ const FavRecipe = () => {
                     {
                         fav.length ? <View style={theme.HomeScreenStyles.container}>
                             <View style={theme.HomeScreenStyles.searchContainer}>
-                                <SearchBar scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
+                                <SearchBar testID='searchBar' scrollEnabled placeholder="Search Recipes ..." onChangeText={searchFunc} value={search} round lightTheme containerStyle={theme.HomeScreenStyles.searchContainerStyle} inputContainerStyle={theme.CategoriesStyles.searchInpStyle} />
                                 <SpeechRecognition setContent={searchFunc} />
                             </View>
                             <View>

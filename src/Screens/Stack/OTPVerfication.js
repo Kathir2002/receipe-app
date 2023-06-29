@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { View, Dimensions, TouchableOpacity, ImageBackground } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { View, TouchableOpacity, ImageBackground, ToastAndroid } from 'react-native'
 import { ThemeConsumer, Text } from 'react-native-elements'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import AntDesign from "react-native-vector-icons/AntDesign"
@@ -10,14 +10,15 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import userContext from '../../Store/userContext'
 
 
 const OTPVerfication = () => {
     const navigation = useNavigation()
     const route = useRoute().params
-    const [userProfilePhoto, setUserProfilePhoto] = useState("https://cdn-icons-png.flaticon.com/512/149/149071.png")
+    const { setIsAuth } = useContext(userContext)
     const [OTPString, setOTPString] = useState("")
-    const [isOtpValid, setIsOtpValid] = useState(false)
     const [timer, setTimer] = useState(5 * 60);
     const [loading, setLoading] = useState(false)
 
@@ -34,29 +35,33 @@ const OTPVerfication = () => {
             const intervalId = setTimeout(() => {
                 setTimer(timer - 1);
             }, 1000);
-
             return () => clearInterval(intervalId);
         }
     }, [timer]);
 
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
-
+    if (timer == 0) {
+        navigation.navigate("Signup")
+        ToastAndroid.showWithGravity("Please renter the details!", ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+    }
     const otpVerifyHandler = async () => {
 
         if (OTPString == route.otp) {
-            const data = { ...route.values, userProfilePhoto: { photo: userProfilePhoto } }
             const nodeData = { name: route.values.uName, password: route.values.password, email: route.values.email, phoneNumber: route.values.phoneNumber }
-            console.log(route.values);
             setLoading(true)
-            // await axios.post("https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users.json", data)
-            await axios.post("https://calm-ruby-leopard-ring.cyclic.app//signup", data)
-                .catch(err => console.log(err))
-            // const mailData = { password: route.values.password, email: route.values.email, phoneNumber: route.values.phoneNumber, name: route.values.uName }
-            // await axios.post("https://calm-ruby-leopard-ring.cyclic.app/send-email", mailData)
-            //     .catch((err) => console.log("err", err))
+            const res = await axios.post("https://calm-ruby-leopard-ring.cyclic.app/signup", nodeData)
             setLoading(false)
-            navigation.navigate("Signin")
+            await AsyncStorage.setItem("userKey", res.data?.data?._id)
+            setIsAuth(true)
+            if (route?.isSelected) {
+                await AsyncStorage.setItem("loginUser", JSON.stringify(true))
+            }
+            navigation.navigate("HomeDrawer")
+            ToastAndroid.showWithGravity(res?.data?.success, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+        }
+        else {
+            ToastAndroid.showWithGravity("Enter valid OTP", ToastAndroid.SHORT, ToastAndroid.BOTTOM)
         }
     }
 
@@ -69,17 +74,17 @@ const OTPVerfication = () => {
                     </ImageBackground>
                 </View> : <>
                     <View style={theme.RecipeDetailStyle.iconContainerStyle}>
-                        <AntDesign name='arrowleft' color="white" size={30} onPress={() => navigation.goBack()} />
+                        <AntDesign testID='backIcon' name='arrowleft' color="white" size={30} onPress={() => navigation.goBack()} />
                         <Text style={theme.RecipeDetailStyle.txt}>Verification</Text>
                     </View>
                     <View style={theme.OTPVerifyStyles.container}>
                         <View>
-                            <Text h5>Email Send to {route?.values?.email} </Text>
+                            <Text testID='emailTxt' h5>Email Send to {route?.values?.email} </Text>
                         </View>
                         <Text h4>Enter OTP to verify</Text>
-                        <Text style={{ color: "black" }}>{`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`}</Text>
+                        <Text testID='time' style={{ color: "black" }}>{`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`}</Text>
 
-                        <View style={theme.OTPVerifyStyles.otpContainer}>
+                        <View testID='otpField' style={theme.OTPVerifyStyles.otpContainer}>
                             <CodeField
                                 ref={ref}
                                 {...props}
@@ -109,11 +114,11 @@ const OTPVerfication = () => {
                                 )}
                             />
                         </View>
-                        <Text h4>{route?.otp}</Text>
-                        <Text h4>{OTPString}</Text>
-                        <TouchableOpacity style={theme.OTPVerifyStyles.buttonContainer} onPress={otpVerifyHandler} >
-                            <Text style={theme.OTPVerifyStyles.btnText}>Verify</Text>
-                        </TouchableOpacity>
+                        <View style={{ alignItems: "center", marginTop: 50 }}>
+                            <TouchableOpacity testID='otpHandlerBtn' style={theme.OTPVerifyStyles.buttonContainer} onPress={otpVerifyHandler} >
+                                <Text style={theme.OTPVerifyStyles.btnText}>Verify</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </>
             )

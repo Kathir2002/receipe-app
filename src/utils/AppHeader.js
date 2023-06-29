@@ -11,10 +11,10 @@ const AppHeader = ({ name }) => {
     return (
         <ThemeConsumer>
             {({ theme }) => (
-                <View style={theme.AppHeaderStyles.container}>
+                <View testID='appHeaderView' style={theme.AppHeaderStyles.container}>
                     <View style={theme.AppHeaderStyles.innerView}>
-                        <Text h4 style={theme.AppHeaderStyles.txt}>{name}</Text>
-                        <Icon style={theme.AppHeaderStyles.iconStyle} name="grid" size={30} color={"white"} onPress={() => navigation.openDrawer()} />
+                        <Text testID='nameField' h4 style={theme.AppHeaderStyles.txt}>{name}</Text>
+                        <Icon testID='drawerIcon' style={theme.AppHeaderStyles.iconStyle} name="grid" size={30} color={"white"} onPress={() => navigation.openDrawer()} />
                     </View>
                 </View>
             )}

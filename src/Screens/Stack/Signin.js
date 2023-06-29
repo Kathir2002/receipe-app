@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState, useRef } from 'react'
 import { View, TextInput, TouchableOpacity, ToastAndroid } from 'react-native'
-import { Avatar, Button, Text, ThemeConsumer } from 'react-native-elements'
+import { Avatar, Text, ThemeConsumer } from 'react-native-elements'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Icon from "react-native-vector-icons/FontAwesome"
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,65 +11,45 @@ import axios from 'axios'
 //file imports 
 import userContext from '../../Store/userContext'
 import CheckedBox from '../../utils/CheckedBox'
-import { useRef } from 'react'
-import { Modal } from 'react-native'
 
 const Signin = () => {
     const ref = useRef()
     const navigation = useNavigation()
-    const [userData, setUserData] = useState([])
-    const [userDataKey, setUserDataKey] = useState([])
-    const [fullData, setFullData] = useState([])
+
     const [isTouched, setIsTouched] = useState(false)
     const [isSelected, setSelection] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false)
 
-    const { setIsAuth } = useContext(userContext)
-
-    useEffect(() => {
-        getUserData()
-    }, [])
+    const { setIsAuth, setIsAdmin } = useContext(userContext)
 
     const remindHandler = (e) => {
         setSelection(e)
     }
 
-    //To get the users data from backend
-    const getUserData = async () => {
+    const onCheckHandler = async (values) => {
         try {
-            const res = await axios.get("https://chatapp-167bb-default-rtdb.asia-southeast1.firebasedatabase.app/users.json")
-            // const res = await axios.get("https://calm-ruby-leopard-ring.cyclic.app/signin", { email: "kathirmthvn@gmail.com", password: "mathavan" })
-            console.log(res.data);
-            setUserDataKey(Object.keys(res.data))
-            setFullData(res.data)
-            setUserData(Object.values(res.data))
+            const res = await axios.post("https://calm-ruby-leopard-ring.cyclic.app/signin", { email: values.email, password: values.password })
+            if (res?.data.error) {
+                ToastAndroid.showWithGravity(res?.data?.error, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+            }
+            else {
+                if (res?.data?.auth == true) {
+                    await AsyncStorage.setItem("userKey", res?.data?.data?._id)
+                    if (isSelected) {
+                        await AsyncStorage.setItem("loginUser", JSON.stringify(true))
+                    }
+                    if (res?.data?.data?.userRole == 1) {
+                        setIsAdmin(true)
+                    }
+                    setIsAuth(true)
+                    navigation.navigate('HomeDrawer')
+                }
+                else {
+                    ToastAndroid.showWithGravity(res.data, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+                }
+            }
         }
         catch (err) {
-            console.log(err);
-        }
-    }
-    const onCheckHandler = (values) => {
-        let valid = true
-        //to take key of the user
-        userDataKey.map(async (key) => {
-            if (fullData[key].email === values.email) {
-                await AsyncStorage.setItem("userKey", JSON.stringify(key))
-            }
-        })
-        //to validate the credentials
-        userData.map((res) => {
-            if ((res.email === values.email) && (res.password === values.password)) {
-                if (isSelected) {
-                    AsyncStorage.setItem("loginUser", JSON.stringify(true))
-                }
-                navigation.navigate('HomeDrawer')
-                setIsAuth(true)
-                valid = false
-            }
-        })
-        if (valid) {
-            ToastAndroid.showWithGravity("Please enter valid credentials!", ToastAndroid.SHORT, ToastAndroid.BOTTOM)
-
+            console.log(err)
         }
     }
     //yup validation schema
@@ -87,10 +67,10 @@ const Signin = () => {
 
         <ThemeConsumer>
             {({ theme }) => (
-                <View style={theme.SigninStyles.container}>
+                <View testID='signinMainView' style={theme.SigninStyles.container}>
                     <View style={theme.SigninStyles.empty}>
-                        <AntDesign name="arrowleft" color="white" size={30} onPress={() => navigation.navigate("HomeReceipe")} />
-                        <Text style={theme.SigninStyles.forgetTxt} onPress={() => navigation.navigate("ChangePassword")}>Forget Password?</Text>
+                        <AntDesign testID='backIcon' name="arrowleft" color="white" size={30} onPress={() => navigation.navigate("HomeReceipe")} />
+                        <Text testID='changePass' style={theme.SigninStyles.forgetTxt} onPress={() => navigation.navigate("ChangePassword")}>Forget Password?</Text>
                     </View>
 
                     <Formik
@@ -99,7 +79,6 @@ const Signin = () => {
                         initialValues={{ email: "", password: "" }}
                         onSubmit={values => onCheckHandler(values)}>
                         {({ errors, touched, setFieldValue, handleBlur, handleSubmit, values, isValid }) => (
-
                             <View style={theme.SigninStyles.inpStart}>
                                 <View style={theme.SignupStyles.inpView}>
                                     <Text h3>Let's get something</Text>
@@ -113,6 +92,7 @@ const Signin = () => {
                                 <View style={theme.SigninStyles.txtFieldFlex}>
                                     <AntDesign name="mail" size={25} color="black" />
                                     <TextInput
+                                        testID='emailField'
                                         style={theme.SigninStyles.inpStyle}
                                         autoCapitalize='none'
                                         name="email"
@@ -130,17 +110,19 @@ const Signin = () => {
                                 <View style={theme.SigninStyles.txtFieldFlex} >
                                     <AntDesign name='lock' size={25} color="black" />
                                     <TextInput
+                                        testID='passwordField'
+                                        autoCapitalize="none"
                                         name="password"
                                         style={theme.SigninStyles.inpStyle}
                                         placeholder='Password'
                                         onChangeText={(text) => setFieldValue('password', text)}
                                         onBlur={handleBlur("password")}
                                         value={values.password}
-                                        secureTextEntry={isTouched ? false : true}
+                                        secureTextEntry={isTouched}
                                         placeholderTextColor="black"
                                         keyboardType="default"
                                     />
-                                    <Icon name={isTouched ? "eye" : "eye-slash"} size={25} color={"black"} onPress={() => setIsTouched(!isTouched)} />
+                                    <Icon testID='icon' name={isTouched ? "eye" : "eye-slash"} size={25} color={"black"} onPress={() => setIsTouched(!isTouched)} />
                                     {(errors.password && touched.password) &&
                                         <Text style={theme.SigninStyles.errorText}>{errors.password}</Text>
                                     }
@@ -148,19 +130,14 @@ const Signin = () => {
                                 <View style={theme.SigninStyles.footerContainer}>
                                     <View style={theme.SigninStyles.switchContainer}>
                                         <Text style={theme.SignupStyles.remindTxt}>Remaind me next time</Text>
+
                                         <CheckedBox isSelected={isSelected} setSelection={remindHandler} />
                                     </View>
-                                    <TouchableOpacity style={theme.SigninStyles.buttonContainer} disabled={!isValid} onPress={handleSubmit}>
+                                    <TouchableOpacity testID='signinBtn' style={theme.SigninStyles.buttonContainer} disabled={!isValid} onPress={handleSubmit}>
                                         <Text h4 style={theme.SigninStyles.btnText}>Signin</Text>
                                     </TouchableOpacity>
-                                    <Text style={theme.SigninStyles.loginText} onPress={() => { ref?.current?.resetForm(); navigation.navigate("Signup") }} >Do You don't have an Account?</Text>
+                                    <Text style={theme.SigninStyles.loginText} testID='registerBtn' onPress={() => { ref?.current?.resetForm(); navigation.navigate("Signup") }} >Do You don't have an Account?</Text>
                                 </View>
-                                <Modal animationType="slide" transparent={true} visible={modalVisible}>
-                                    <View>
-                                        <Text>Hai</Text>
-                                        <Button onPress={() => setModalVisible(false)}>Close</Button>
-                                    </View>
-                                </Modal>
                             </View>
                         )}
                     </Formik>
